@@ -362,17 +362,7 @@ footer {
 
         </nav>
 
-        <div class="nav-actions">
-
-            <a href="login.php" class="login">
-                Login
-            </a>
-
-            <a href="register.php" class="signup">
-                Sign Up
-            </a>
-
-        </div>
+        
 
     </header>
 

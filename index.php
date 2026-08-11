@@ -1,5 +1,42 @@
 <?php
 session_start();
+include 'db.php';
+
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['submit_review'])) {
+
+    if (!isset($_SESSION['user_id'])) {
+        header("Location: login.php");
+        exit();
+    }
+
+    $restaurant_id = intval($_POST['restaurant_id']);
+    $rating = intval($_POST['rating']);
+    $review = trim($_POST['review']);
+    $user_id = intval($_SESSION['user_id']);
+
+    if ($restaurant_id > 0 && $rating >= 1 && $rating <= 5 && !empty($review)) {
+
+        $stmt = $conn->prepare(
+            "INSERT INTO reviews
+            (restaurant_id, user_id, rating, review)
+            VALUES (?, ?, ?, ?)"
+        );
+
+        $stmt->bind_param(
+            "iiis",
+            $restaurant_id,
+            $user_id,
+            $rating,
+            $review
+        );
+
+        $stmt->execute();
+        $stmt->close();
+
+        header("Location: index.php#reviews");
+        exit();
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -726,7 +763,213 @@ session_start();
     </div>
 
 </section>
+<section class="home-reviews" id="reviews">
 
+    <div class="reviews-heading">
+
+        <span>FOODIEHUB REVIEWS</span>
+
+        <h2>
+            What Food Lovers Say
+        </h2>
+
+        <p>
+            Share your experience and help others
+            discover great places to eat.
+        </p>
+
+    </div>
+
+    <div class="review-form">
+
+        <h3>
+            ⭐ Write a Review
+        </h3>
+
+        <?php if (!isset($_SESSION['user_id'])): ?>
+
+            <p>
+                Please
+                <a href="login.php">login</a>
+                to write a review.
+            </p>
+
+        <?php else: ?>
+
+            <form method="POST">
+
+                <label>
+                    Restaurant
+                </label>
+
+                <select name="restaurant_id" required>
+
+                    <option value="">
+                        Select Restaurant
+                    </option>
+
+                    <option value="1">
+                        The Food House
+                    </option>
+
+                    <option value="2">
+                        Urban Bites
+                    </option>
+
+                    <option value="3">
+                        Taste Corner
+                    </option>
+
+                    <option value="4">
+                        Momo Station
+                    </option>
+
+                    <option value="5">
+                        Pizza Palace
+                    </option>
+
+                </select>
+
+                <label>
+                    Rating
+                </label>
+
+                <select name="rating" required>
+
+                    <option value="">
+                        Select Rating
+                    </option>
+
+                    <option value="5">
+                        ⭐⭐⭐⭐⭐ 5 - Excellent
+                    </option>
+
+                    <option value="4">
+                        ⭐⭐⭐⭐ 4 - Very Good
+                    </option>
+
+                    <option value="3">
+                        ⭐⭐⭐ 3 - Good
+                    </option>
+
+                    <option value="2">
+                        ⭐⭐ 2 - Average
+                    </option>
+
+                    <option value="1">
+                        ⭐ 1 - Poor
+                    </option>
+
+                </select>
+
+                <label>
+                    Your Review
+                </label>
+
+                <textarea
+                    name="review"
+                    placeholder="Tell us about your experience..."
+                    required
+                ></textarea>
+
+                <button
+                    type="submit"
+                    name="submit_review"
+                >
+                    Submit Review
+                </button>
+
+            </form>
+
+        <?php endif; ?>
+
+    </div>
+
+
+    <div class="review-cards">
+
+        <?php
+
+        $review_sql = "
+            SELECT *
+            FROM reviews
+            ORDER BY created_at DESC
+            LIMIT 6
+        ";
+
+        $review_result = $conn->query($review_sql);
+
+        ?>
+
+        <?php if ($review_result && $review_result->num_rows > 0): ?>
+
+            <?php while ($review = $review_result->fetch_assoc()): ?>
+
+                <div class="home-review-card">
+
+                    <div class="review-user">
+
+                        <div class="user-icon">
+                            👤
+                        </div>
+
+                        <div>
+
+                            <strong>
+                                User #<?php echo $review['user_id']; ?>
+                            </strong>
+
+                            <div class="review-stars">
+
+                                <?php
+                                echo str_repeat(
+                                    "⭐",
+                                    $review['rating']
+                                );
+                                ?>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <p>
+                        "<?php echo htmlspecialchars($review['review']); ?>"
+                    </p>
+
+                    <small>
+                        <?php
+                        echo date(
+                            "M d, Y",
+                            strtotime($review['created_at'])
+                        );
+                        ?>
+                    </small>
+
+                </div>
+
+            <?php endwhile; ?>
+
+        <?php else: ?>
+
+            <div class="no-home-reviews">
+
+                <h3>
+                    Be the first to review! ⭐
+                </h3>
+
+                <p>
+                    Your review will appear here.
+                </p>
+
+            </div>
+
+        <?php endif; ?>
+
+    </div>
+
+</section>
     
 <section class="why-us">
     <div class="safal-content">

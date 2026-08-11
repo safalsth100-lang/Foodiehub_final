@@ -267,6 +267,10 @@ if (!$result) {
     background: #ffe0b2;
     color: #bf360c !important;
 }
+.stha{
+    background-image:url('https://mir-s3-cdn-cf.behance.net/projects/404/3f933b88225973.Y3JvcCwxMjAwLDkzOCwwLDg5.jpg');
+  
+}
     </style>
 
 </head>
@@ -282,7 +286,7 @@ if (!$result) {
 
     <div class="navbar-links">
 
-        <a href="index.html">
+        <a href="index.php">
             Home
         </a>
 
@@ -290,9 +294,12 @@ if (!$result) {
             Restaurants
         </a>
 
-        <a href="about.html">
+        <a href="about.php">
             About
         </a>
+            <a href="founder.php">Founders</a>
+
+        
 
         <a href="logout.php" class="logout-btn">
             Logout
@@ -301,7 +308,7 @@ if (!$result) {
     </div>
 
 </nav>
-
+<div class="stha">
 <div class="page-header">
 
     <h1>
@@ -396,7 +403,7 @@ if ($result->num_rows > 0) {
 ?>
 
 </div>
-
+</div>
 </body>
 
 </html>

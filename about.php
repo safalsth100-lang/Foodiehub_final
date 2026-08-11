@@ -176,17 +176,7 @@
 
         </nav>
 
-        <div class="nav-actions">
-
-            <a href="login.php" class="login-link">
-                Login
-            </a>
-
-            <a href="register.php" class="signup-btn">
-                Sign Up
-            </a>
-
-        </div>
+        
 
     </header>
 
