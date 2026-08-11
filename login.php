@@ -204,7 +204,7 @@ button:hover{
     position:relative;
     z-index:3;
     width:40%;
-    margin:0 0 10px 57%;
+    margin:0 0 15px 58%;
     color:#ff6b6b;
     text-align:center;
     font-size:13px;
